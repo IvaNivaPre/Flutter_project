@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../firebase_options.dart';
 
 
 class RegisterView extends StatefulWidget {
@@ -62,54 +60,68 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: _email,
-          enableSuggestions: false,
-          autocorrect: false,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            hintText: "Enter your email"
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Register'),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: "Enter your email"
+            ),
           ),
-        ),
-        TextField(
-          controller: _password1,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            hintText: "Enter your password"
+          TextField(
+            controller: _password1,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: InputDecoration(
+              hintText: "Enter your password"
+            ),
           ),
-        ),
-        TextField(
-          controller: _password2,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            hintText: "Repeat your password"
+          TextField(
+            controller: _password2,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: InputDecoration(
+              hintText: "Repeat your password"
+            ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            if (_password1.text != _password2.text) {
-              _infoField.value = "Passwords doesen't match";
-              return;
-            }
-            registerUser();
-          },
-          child: const Text("Register")
-        ),
-        Expanded(
-          child: Center(
-            child: ValueListenableBuilder<String>(
-              valueListenable: _infoField,
-              builder: (context, value, child) => Text(value)
-            )
+          TextButton(
+            onPressed: () {
+              if (_password1.text != _password2.text) {
+                _infoField.value = "Passwords doesen't match";
+                return;
+              }
+              registerUser();
+            },
+            child: const Text("Register")
           ),
-        )
-      ],
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login/',
+                (route) => false,
+              );
+            },
+            child: const Text("Have an account? Login here!"),
+          ),
+          Expanded(
+            child: Center(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _infoField,
+                builder: (context, value, child) => Text(value)
+              )
+            ),
+          )
+        ],
+      ),
     );
   }
 }

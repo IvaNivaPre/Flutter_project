@@ -55,39 +55,53 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: _email,
-          enableSuggestions: false,
-          autocorrect: false,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            hintText: "Enter your email"
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: "Enter your email"
+            ),
           ),
-        ),
-        TextField(
-          controller: _password,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            hintText: "Enter your password"
+          TextField(
+            controller: _password,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: InputDecoration(
+              hintText: "Enter your password"
+            ),
           ),
-        ),
-        TextButton(
-          onPressed: loginUser,
-          child: const Text("Login")
-        ),
-        Expanded(
-          child: Center(
-            child: ValueListenableBuilder<String>(
-              valueListenable: _infoField,
-              builder: (context, value, child) => Text(value)
-            )
+          TextButton(
+            onPressed: loginUser,
+            child: const Text("Login")
           ),
-        )
-      ],
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/register/',
+                (route) => false,
+              );
+            },
+            child: Text("Not Registered yet? Register here!")
+          ),
+          Expanded(
+            child: Center(
+              child: ValueListenableBuilder<String>(
+                valueListenable: _infoField,
+                builder: (context, value, child) => Text(value)
+              )
+            ),
+          )
+        ],
+      ),
     );
   }
 }
