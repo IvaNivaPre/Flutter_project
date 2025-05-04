@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1051808014539",
+    "project_id": "second-a6b11",
+    "storage_bucket": "second-a6b11.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051808014539:android:9093ff72f56afd5158bb4e",
+        "android_client_info": {
+          "package_name": "com.example.first_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2X63-obUSTvdj-9qN9_LcnHF_VlslT_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051808014539:android:4d24b4edd495809558bb4e",
+        "android_client_info": {
+          "package_name": "com.example.second"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2X63-obUSTvdj-9qN9_LcnHF_VlslT_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
