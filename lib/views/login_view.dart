@@ -38,7 +38,10 @@ class _LoginViewState extends State<LoginView> {
         password: password
       );
       _infoField.value = "Login succeed";
-      print(userCredential);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/notes/',
+        (_) => false,
+      );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found' || 'invalid-email':
@@ -47,9 +50,9 @@ class _LoginViewState extends State<LoginView> {
         case 'wrong-password':
           _infoField.value = "Wrong password";
           print("Wrong password");
+        default:
+          print(e);
       }
-    } catch (e) {
-      print(e);
     }
   }
 
