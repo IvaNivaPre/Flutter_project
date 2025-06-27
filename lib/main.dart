@@ -4,9 +4,9 @@ import 'package:first_application/firebase_options.dart';
 import 'package:first_application/views/login_view.dart';
 import 'package:first_application/views/register_view.dart';
 import 'package:first_application/views/verify_email_view.dart';
+import 'package:first_application/constants/routes.dart' as routes;
 import 'package:flutter/material.dart';
 import 'dart:developer' as console show log;
-
 
 
 void main() {
@@ -19,9 +19,10 @@ void main() {
       ),
       home: const HomePage(),
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView(),
-        '/notes/': (context) => const NotesView(),
+        routes.loginRoute: (context) => const LoginView(),
+        routes.registerRoute: (context) => const RegisterView(),
+        routes.notesRoute: (context) => const NotesView(),
+        routes.verifyEmailRoute: (context) => const VreifyEmailView()
       },
     )
   );
@@ -41,7 +42,7 @@ class HomePage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
           final user = FirebaseAuth.instance.currentUser;
-          print(user);
+          console.log(user.toString());
           if (user == null) return LoginView();
           if (user.emailVerified) {
             return NotesView();
@@ -107,7 +108,7 @@ class _NotesViewState extends State<NotesView> {
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/login/',
+                      routes.loginRoute,
                       (_) => false
                     );
                   }

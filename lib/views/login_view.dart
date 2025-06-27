@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_application/constants/routes.dart' as routes;
+import 'package:first_application/utilities/show_error_dialog.dart';
+import 'dart:developer' as console show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -33,26 +36,28 @@ class _LoginViewState extends State<LoginView> {
     final password = _password.text;
 
     try {
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password
       );
       _infoField.value = "Login succeed";
       Navigator.of(context).pushNamedAndRemoveUntil(
-        '/notes/',
+        routes.notesRoute,
         (_) => false,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found' || 'invalid-email':
+          await showErrorDialog(context, "No user with such email");
           _infoField.value = "No user with such email";
-          print("User not found");
         case 'wrong-password':
+          await showErrorDialog(context, "Wrong password");
           _infoField.value = "Wrong password";
-          print("Wrong password");
         default:
-          print(e);
+          await showErrorDialog(context, "Error: ${e.toString()}");
       }
+    } catch (e) {
+      console.log(e.toString());
     }
   }
 
@@ -89,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                '/register/',
+                routes.registerRoute,
                 (route) => false,
               );
             },

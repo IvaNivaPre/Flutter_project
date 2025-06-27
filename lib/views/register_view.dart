@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:first_application/constants/routes.dart' as routes;
+import 'package:first_application/utilities/show_error_dialog.dart';
+import 'dart:developer' as console show log;
 
 
 class RegisterView extends StatefulWidget {
@@ -37,24 +40,32 @@ class _RegisterViewState extends State<RegisterView> {
     final password1 = _password1.text;
 
     try {
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password1
       );
       _infoField.value = "Register succeed";
-      print(userCredential);
+      User? user = FirebaseAuth.instance.currentUser;
+      await user?.sendEmailVerification();
+      Navigator.of(context).pushNamed(
+        routes.verifyEmailRoute,
+      );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'weak-password':
           _infoField.value = 'Password is too weak';
-          print('Password is too weak');
+          await showErrorDialog(context, 'Password is too weak');
         case 'email-already-in-use':
           _infoField.value = 'This email is already used';
-          print('This email is already used');
+          await showErrorDialog(context, 'This email is already used');
         case 'invalid-email':
           _infoField.value = 'This is invalid email';
-          print('This is invalid email');
+          await showErrorDialog(context, 'This is invalid email');
+        default:
+          await showErrorDialog(context, "Error: ${e.toString()}");
       }
+    } catch (e) {
+      console.log(e.toString());
     }
   }
 
@@ -106,7 +117,7 @@ class _RegisterViewState extends State<RegisterView> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                '/login/',
+                routes.loginRoute,
                 (route) => false,
               );
             },
