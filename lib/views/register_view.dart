@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_application/services/auth/auth_exceptions.dart';
+import 'package:first_application/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:first_application/constants/routes.dart' as routes;
 import 'package:first_application/utilities/show_error_dialog.dart';
-import 'dart:developer' as console show log;
 
 
 class RegisterView extends StatefulWidget {
@@ -40,32 +40,27 @@ class _RegisterViewState extends State<RegisterView> {
     final password1 = _password1.text;
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await AuthService.firebase().createUser(
         email: email,
         password: password1
       );
       _infoField.value = "Register succeed";
-      User? user = FirebaseAuth.instance.currentUser;
-      await user?.sendEmailVerification();
+      await AuthService.firebase().sendEmailVerification();
       Navigator.of(context).pushNamed(
         routes.verifyEmailRoute,
       );
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'weak-password':
-          _infoField.value = 'Password is too weak';
-          await showErrorDialog(context, 'Password is too weak');
-        case 'email-already-in-use':
-          _infoField.value = 'This email is already used';
-          await showErrorDialog(context, 'This email is already used');
-        case 'invalid-email':
-          _infoField.value = 'This is invalid email';
-          await showErrorDialog(context, 'This is invalid email');
-        default:
-          await showErrorDialog(context, "Error: ${e.toString()}");
-      }
-    } catch (e) {
-      console.log(e.toString());
+    } on WeakPasswordAuthException {
+        _infoField.value = 'Password is too weak';
+        await showErrorDialog(context, 'Password is too weak');
+    } on EmailAlreadyInUseAuthException {
+        _infoField.value = 'This email is already used';
+        await showErrorDialog(context, 'This email is already used');
+    } on InvalidEmailAuthException {
+        _infoField.value = 'This is invalid email';
+        await showErrorDialog(context, 'This is invalid email');
+    } on GenericAuthException {
+        _infoField.value = 'Authentication error';
+        await showErrorDialog(context, 'Authentication error');
     }
   }
 

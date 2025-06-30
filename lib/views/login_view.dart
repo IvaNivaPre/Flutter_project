@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:first_application/services/auth/auth_exceptions.dart';
+import 'package:first_application/services/auth/auth_service.dart';
 import 'package:flutter/material.dart'; 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_application/constants/routes.dart' as routes;
 import 'package:first_application/utilities/show_error_dialog.dart';
-import 'dart:developer' as console show log;
+
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -36,28 +39,34 @@ class _LoginViewState extends State<LoginView> {
     final password = _password.text;
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await AuthService.firebase().logIn(
         email: email,
         password: password
       );
-      _infoField.value = "Login succeed";
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        routes.notesRoute,
-        (_) => false,
-      );
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'user-not-found' || 'invalid-email':
-          await showErrorDialog(context, "No user with such email");
-          _infoField.value = "No user with such email";
-        case 'wrong-password':
-          await showErrorDialog(context, "Wrong password");
-          _infoField.value = "Wrong password";
-        default:
-          await showErrorDialog(context, "Error: ${e.toString()}");
+      final user = AuthService.firebase().currentUser;
+      if (user?.isEmailVerified ?? false) {
+        _infoField.value = "Login succeed";
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          routes.notesRoute,
+          (_) => false,
+        );
+      } else {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          routes.verifyEmailRoute,
+          (_) => false,
+        );
       }
-    } catch (e) {
-      console.log(e.toString());
+
+      
+    } on UserNotFoundAuthException {
+      _infoField.value = "No user with such email";
+      await showErrorDialog(context, "No user with such email");
+    } on WrongPasswordAuthException {
+      _infoField.value = "Wrong password";
+      await showErrorDialog(context, "Wrong password");
+    } on GenericAuthException {
+      _infoField.value = "Authentication error";
+      await showErrorDialog(context, "Authentication error");
     }
   }
 
